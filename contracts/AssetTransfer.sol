@@ -21,6 +21,7 @@ contract AssetTransfer {
 
   event NewCompanyRegistered(uint _companyID);
   event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
+  event AssetTransfer(uint _assetID, uint _toCompanyID, uint _fromCompanyID);
 
   function AssetTransfer() public {
     admin = msg.sender;
