@@ -6,7 +6,7 @@ contract AssetTransfer {
     uint id;
     string name;
     string description;
-    Asset[] assets;
+    mapping (uint => Asset) assets;
   }
 
   struct Asset {
