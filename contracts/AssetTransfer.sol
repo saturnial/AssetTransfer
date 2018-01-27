@@ -19,11 +19,11 @@ contract AssetTransfer {
 
   uint public numCompanies;
   uint public numAssets;
-  mapping (uint => Company) public companies;
+  mapping (address => Company) public companies;
 
-  event NewCompanyRegistered(uint _companyID);
   event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
   event AssetTransfered(uint _assetID, uint _toCompanyID, uint _fromCompanyID);
+  event NewCompanyRegistered(address _owner, uint _companyID);
 
   function AssetTransfer() public {
     admin = msg.sender;
@@ -34,12 +34,13 @@ contract AssetTransfer {
     _;
   }
 
-  function registerNewCompany(string _name, string _description) public adminOnly returns (uint companyID) {
+  function registerNewCompany(address _owner, string _name, string _description) public adminOnly returns (uint companyID) {
     companyID = numCompanies++;
-    companies[companyID].id = companyID;
-    companies[companyID].name = _name;
-    companies[companyID].description = _description;
-    NewCompanyRegistered(companyID);
+    companies[_owner].id = companyID;
+    companies[_owner].owner = _owner;
+    companies[_owner].name = _name;
+    companies[_owner].description = _description;
+    NewCompanyRegistered(_owner, companyID);
   }
 
   function registerAssetToCompany(string _name, uint _companyID) public returns (uint assetID) {
