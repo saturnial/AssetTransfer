@@ -41,6 +41,7 @@ contract AssetTransfer {
 
   function registerAssetToCompany(uint _assetID, string _name, uint _companyID) public {
     companies[_companyID].assets[_assetID]= Asset(_assetID, _name);
+    NewAssetRegisteredToCompany(_assetID, _companyID);
   }
 
 }
