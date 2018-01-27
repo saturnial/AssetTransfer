@@ -16,6 +16,10 @@ contract AssetTransfer {
   event NewCompanyRegistered(uint id);
 
   function registerNewCompany(string _name, string _description) public returns (uint companyID) {
+  function AssetTransfer() public {
+    admin = msg.sender;
+  }
+
     companyID = numCompanies++; // companyID is return variable.
     companies[companyID] = Company({id: companyID, name: _name, description: _description});
     NewCompanyRegistered(companyID);
