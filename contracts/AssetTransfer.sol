@@ -55,6 +55,10 @@ contract AssetTransfer {
 
   /* ERC721 implementation */
 
+  function name() public pure returns (string _name) {
+    return "Asset";
+  }
+
   function totalSupply() public constant returns (uint _totalSupply) {
     return numAssets;
   }
