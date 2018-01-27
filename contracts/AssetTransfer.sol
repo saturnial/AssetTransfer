@@ -122,4 +122,10 @@ contract AssetTransfer {
     return companies[_owner].assets[_index].id;
   }
 
+  function tokenMetadata(uint _tokenId) public view returns (string _info) {
+    require(validateAssetId(_tokenId));
+    address owner = ownerOf(_tokenId);
+    return companies[owner].assets[_tokenId].name;
+  }
+
 }
