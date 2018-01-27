@@ -14,6 +14,7 @@ contract AssetTransfer {
   struct Asset {
     uint id;
     string name;
+    uint price;
   }
 
   address admin;
@@ -49,9 +50,9 @@ contract AssetTransfer {
     NewCompanyRegistered(_owner, companyID);
   }
 
-  function registerNewAssetToCompany(address _owner, string _name) public returns (uint assetID) {
+  function registerNewAssetToCompany(address _owner, string _name, uint _price) public returns (uint assetID) {
     assetID = numAssets++;
-    companies[_owner].assets[assetID]= Asset(assetID, _name);
+    companies[_owner].assets[assetID]= Asset(assetID, _name, _price);
     assetRegistry[assetID] = _owner;
     NewAssetRegisteredToCompany(_owner, assetID);
   }
