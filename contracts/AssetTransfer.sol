@@ -8,6 +8,11 @@ contract AssetTransfer {
     string description;
   }
 
+  struct Asset {
+    uint id;
+    string name;
+  }
+
   address admin;
 
   uint public numCompanies;
