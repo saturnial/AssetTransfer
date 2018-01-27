@@ -20,6 +20,7 @@ contract AssetTransfer {
 
   uint public numCompanies;
   uint public numAssets;
+  mapping (uint => address) public assetRegistry;
   mapping (address => Company) public companies;
 
   event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
