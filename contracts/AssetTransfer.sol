@@ -24,8 +24,8 @@ contract AssetTransfer {
   mapping (address => Company) public companies;
 
   event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
-  event AssetTransfered(uint _assetID, uint _toCompanyID, uint _fromCompanyID);
   event NewCompanyRegistered(address _owner, uint _companyID);
+  event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
 
   function AssetTransfer() public {
     admin = msg.sender;
