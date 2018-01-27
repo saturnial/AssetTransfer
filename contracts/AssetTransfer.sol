@@ -8,6 +8,8 @@ contract AssetTransfer {
     string description;
   }
 
+  address admin;
+
   uint public numCompanies;
   mapping (uint => Company) public companies;
 
