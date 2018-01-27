@@ -53,4 +53,10 @@ contract AssetTransfer {
     AssetTransfered(_assetID, _toCompanyID, _fromCompanyID);
   }
 
+  /* ERC721 implementation */
+
+  function totalSupply() public constant returns (uint _totalSupply) {
+    return numAssets;
+  }
+
 }
