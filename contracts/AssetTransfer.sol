@@ -19,7 +19,7 @@ contract AssetTransfer {
   uint public numCompanies;
   mapping (uint => Company) public companies;
 
-  event NewCompanyRegistered(uint id);
+  event NewCompanyRegistered(uint companyID);
 
   function AssetTransfer() public {
     admin = msg.sender;
