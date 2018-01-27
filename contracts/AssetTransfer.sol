@@ -107,4 +107,10 @@ contract AssetTransfer {
     Approval(msg.sender, _to, _tokenId);
   }
 
+  function takeOwnership(uint _tokenId) public {
+    address oldOwner = ownerOf(_tokenId);
+    address newOwner = msg.sender;
+    transferAsset(_tokenId, oldOwner, newOwner);
+  }
+
 }
