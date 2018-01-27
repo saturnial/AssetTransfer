@@ -6,6 +6,7 @@ contract AssetTransfer {
     uint id;
     string name;
     string description;
+    Asset[] assets;
   }
 
   struct Asset {
@@ -31,7 +32,9 @@ contract AssetTransfer {
 
   function registerNewCompany(string _name, string _description) public adminOnly returns (uint companyID) {
     companyID = numCompanies++; // companyID is return variable.
-    companies[companyID] = Company({id: companyID, name: _name, description: _description});
+    companies[companyID].id = companyID;
+    companies[companyID].name = _name;
+    companies[companyID].description = _description;
     NewCompanyRegistered(companyID);
   }
 
