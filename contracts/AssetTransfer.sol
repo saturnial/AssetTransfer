@@ -4,6 +4,7 @@ contract AssetTransfer {
 
   struct Company {
     uint id;
+    address owner;
     string name;
     string description;
     mapping (uint => Asset) assets;
