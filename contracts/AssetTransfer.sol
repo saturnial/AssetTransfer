@@ -34,7 +34,7 @@ contract AssetTransfer {
   }
 
   function registerNewCompany(string _name, string _description) public adminOnly returns (uint companyID) {
-    companyID = numCompanies++; // companyID is return variable.
+    companyID = numCompanies++;
     companies[companyID].id = companyID;
     companies[companyID].name = _name;
     companies[companyID].description = _description;
