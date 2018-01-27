@@ -118,4 +118,8 @@ contract AssetTransfer {
     transferAsset(_tokenId, oldOwner, _to);
   }
 
+  function tokenOfOwnerByIndex(address _owner, uint256 _index) public view returns (uint tokenId) {
+    return companies[_owner].assets[_index].id;
+  }
+
 }
