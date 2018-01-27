@@ -55,6 +55,9 @@ contract AssetTransfer {
     assetRegistry[assetID] = _owner;
     NewAssetRegisteredToCompany(_owner, assetID);
   }
+
+  function validateAssetId(uint _assetId) internal view returns (bool valid) {
+    return _assetId <= numAssets;
   }
 
   function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
