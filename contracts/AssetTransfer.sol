@@ -60,10 +60,20 @@ contract AssetTransfer {
     return _assetId <= numAssets;
   }
 
-  function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
-    companies[_toCompanyID].assets[_assetID] = companies[_fromCompanyID].assets[_assetID];
-    delete companies[_fromCompanyID].assets[_assetID];
-    AssetTransfered(_assetID, _toCompanyID, _fromCompanyID);
+  function transferAsset(uint _assetId, address _from, address _to) internal {
+    require(validateAssetId(_assetId));
+    require(_from != _to);
+    require(allowed[_from][_to] == _assetId);
+
+    assetRegistry[_assetId] = _to;
+
+    companies[_to].assets[_assetId] = companies[_from].assets[_assetId];
+    delete companies[_from].assets[_assetId];
+
+    companies[_to].numAssets++;
+    companies[_from].numAssets--;
+
+    Transfer(_from, _to, _assetId);
   }
 
   /* ERC721 implementation */
