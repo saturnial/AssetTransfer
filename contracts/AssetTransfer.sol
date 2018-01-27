@@ -98,4 +98,13 @@ contract AssetTransfer {
     return assetRegistry[_tokenId];
   }
 
+  function approve(address _to, uint _tokenId) public {
+    require(validateAssetId(_tokenId));
+    require(msg.sender == ownerOf(_tokenId));
+    require(msg.sender != _to);
+
+    allowed[msg.sender][_to] = _tokenId;
+    Approval(msg.sender, _to, _tokenId);
+  }
+
 }
