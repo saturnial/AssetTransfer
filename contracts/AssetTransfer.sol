@@ -113,4 +113,9 @@ contract AssetTransfer {
     transferAsset(_tokenId, oldOwner, newOwner);
   }
 
+  function transfer(address _to, uint _tokenId) public {
+    address oldOwner = ownerOf(_tokenId);
+    transferAsset(_tokenId, oldOwner, _to);
+  }
+
 }
