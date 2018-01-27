@@ -90,4 +90,8 @@ contract AssetTransfer {
     return numAssets;
   }
 
+  function balanceOf(address _owner) public constant returns (uint balance) {
+    return companies[_owner].numAssets;
+  }
+
 }
