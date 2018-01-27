@@ -4,9 +4,11 @@ contract AssetTransfer {
 
   struct Company {
     uint id;
+    address owner;
     string name;
     string description;
     mapping (uint => Asset) assets;
+    uint numAssets;
   }
 
   struct Asset {
@@ -17,11 +19,17 @@ contract AssetTransfer {
   address admin;
 
   uint public numCompanies;
-  mapping (uint => Company) public companies;
+  uint public numAssets;
+  mapping (uint => address) public assetRegistry;
+  mapping (address => Company) public companies;
 
-  event NewCompanyRegistered(uint _companyID);
-  event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
-  event AssetTransfered(uint _assetID, uint _toCompanyID, uint _fromCompanyID);
+  mapping(address => mapping (address => uint)) allowed;
+
+  event NewCompanyRegistered(address _owner, uint _companyID);
+  event NewAssetRegisteredToCompany(address _owner, uint _assetID);
+
+  event Transfer(address indexed _from, address indexed _to, uint256 _tokenId);
+  event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
 
   function AssetTransfer() public {
     admin = msg.sender;
@@ -32,23 +40,92 @@ contract AssetTransfer {
     _;
   }
 
-  function registerNewCompany(string _name, string _description) public adminOnly returns (uint companyID) {
-    companyID = numCompanies++; // companyID is return variable.
-    companies[companyID].id = companyID;
-    companies[companyID].name = _name;
-    companies[companyID].description = _description;
-    NewCompanyRegistered(companyID);
+  function registerNewCompany(address _owner, string _name, string _description) public adminOnly returns (uint companyID) {
+    companyID = numCompanies++;
+    companies[_owner].id = companyID;
+    companies[_owner].owner = _owner;
+    companies[_owner].name = _name;
+    companies[_owner].description = _description;
+    NewCompanyRegistered(_owner, companyID);
   }
 
-  function registerAssetToCompany(uint _assetID, string _name, uint _companyID) public {
-    companies[_companyID].assets[_assetID]= Asset(_assetID, _name);
-    NewAssetRegisteredToCompany(_assetID, _companyID);
+  function registerNewAssetToCompany(address _owner, string _name) public returns (uint assetID) {
+    assetID = numAssets++;
+    companies[_owner].assets[assetID]= Asset(assetID, _name);
+    assetRegistry[assetID] = _owner;
+    NewAssetRegisteredToCompany(_owner, assetID);
   }
 
-  function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
-    companies[_toCompanyID].assets[_assetID] = companies[_fromCompanyID].assets[_assetID];
-    delete companies[_fromCompanyID].assets[_assetID];
-    AssetTransfered(_assetID, _toCompanyID, _fromCompanyID);
+  function validateAssetId(uint _assetId) internal view returns (bool valid) {
+    return _assetId <= numAssets;
+  }
+
+  function transferAsset(uint _assetId, address _from, address _to) internal {
+    require(validateAssetId(_assetId));
+    require(_from != _to);
+    require(allowed[_from][_to] == _assetId);
+
+    assetRegistry[_assetId] = _to;
+
+    companies[_to].assets[_assetId] = companies[_from].assets[_assetId];
+    delete companies[_from].assets[_assetId];
+
+    companies[_to].numAssets++;
+    companies[_from].numAssets--;
+
+    Transfer(_from, _to, _assetId);
+  }
+
+  /* ERC721 implementation */
+
+  function name() public pure returns (string _name) {
+    return "Asset";
+  }
+
+  function symbol() public pure returns (string _symbol) {
+    return "AST";
+  }
+
+  function totalSupply() public constant returns (uint _totalSupply) {
+    return numAssets;
+  }
+
+  function balanceOf(address _owner) public constant returns (uint balance) {
+    return companies[_owner].numAssets;
+  }
+
+  function ownerOf(uint _tokenId) public constant returns (address owner) {
+    return assetRegistry[_tokenId];
+  }
+
+  function approve(address _to, uint _tokenId) public {
+    require(validateAssetId(_tokenId));
+    require(msg.sender == ownerOf(_tokenId));
+    require(msg.sender != _to);
+
+    allowed[msg.sender][_to] = _tokenId;
+    Approval(msg.sender, _to, _tokenId);
+  }
+
+  function takeOwnership(uint _tokenId) public {
+    address oldOwner = ownerOf(_tokenId);
+    address newOwner = msg.sender;
+    transferAsset(_tokenId, oldOwner, newOwner);
+  }
+
+  function transfer(address _to, uint _tokenId) public {
+    address oldOwner = ownerOf(_tokenId);
+    transferAsset(_tokenId, oldOwner, _to);
+  }
+
+  function tokenOfOwnerByIndex(address _owner, uint256 _index) public view returns (uint tokenId) {
+    return companies[_owner].assets[_index].id;
+  }
+
+  function tokenMetadata(uint _tokenId) public view returns (string _info) {
+    require(validateAssetId(_tokenId));
+    address owner = ownerOf(_tokenId);
+    return companies[owner].assets[_tokenId].name;
   }
 
 }
