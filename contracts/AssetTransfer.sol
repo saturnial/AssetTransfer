@@ -10,4 +10,7 @@ contract AssetTransfer {
 
   uint numCompanies;
   mapping (uint => Company) companies;
+
+  event NewCompanyRegistered(uint id);
+
 }
