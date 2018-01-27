@@ -20,6 +20,11 @@ contract AssetTransfer {
     admin = msg.sender;
   }
 
+  modifier adminOnly() {
+    require(msg.sender == admin);
+    _;
+  }
+
     companyID = numCompanies++; // companyID is return variable.
     companies[companyID] = Company({id: companyID, name: _name, description: _description});
     NewCompanyRegistered(companyID);
