@@ -8,8 +8,8 @@ contract AssetTransfer {
     string description;
   }
 
-  uint numCompanies;
-  mapping (uint => Company) companies;
+  uint public numCompanies;
+  mapping (uint => Company) public companies;
 
   event NewCompanyRegistered(uint id);
 
