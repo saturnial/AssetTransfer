@@ -94,4 +94,8 @@ contract AssetTransfer {
     return companies[_owner].numAssets;
   }
 
+  function ownerOf(uint _tokenId) public constant returns (address owner) {
+    return assetRegistry[_tokenId];
+  }
+
 }
