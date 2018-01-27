@@ -59,6 +59,10 @@ contract AssetTransfer {
     return "Asset";
   }
 
+  function symbol() public pure returns (string _symbol) {
+    return "AST";
+  }
+
   function totalSupply() public constant returns (uint _totalSupply) {
     return numAssets;
   }
