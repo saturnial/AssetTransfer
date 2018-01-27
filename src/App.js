@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
+import AssetTransfer from '../build/contracts/AssetTransfer.json'
 import getWeb3 from './utils/getWeb3'
 
 import './css/oswald.css'
@@ -44,26 +44,31 @@ class App extends Component {
      */
 
     const contract = require('truffle-contract')
-    const simpleStorage = contract(SimpleStorageContract)
+    const simpleStorage = contract(AssetTransfer)
+    console.log(simpleStorage);
     simpleStorage.setProvider(this.state.web3.currentProvider)
 
     // Declaring this for later so we can chain functions on SimpleStorage.
     var simpleStorageInstance
-
+    console.log(this.state.web3);
     // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
+      console.log(accounts);
       simpleStorage.deployed().then((instance) => {
         simpleStorageInstance = instance
-
+        console.log(instance);
         // Stores a given value, 5 by default.
-        return simpleStorageInstance.set(5, {from: accounts[0]})
+        return simpleStorageInstance.registerNewCompany("hellowordcompany", "helloworld", {from: accounts[0]})
       }).then((result) => {
         // Get the value from the contract to prove it worked.
+        console.log(simpleStorageInstance.get);
         return simpleStorageInstance.get.call(accounts[0])
       }).then((result) => {
         // Update state with the result.
+        console.log(result);
         return this.setState({ storageValue: result.c[0] })
       })
+      .catch((err)=> console.log(err))
     })
   }
 
