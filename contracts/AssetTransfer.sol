@@ -21,6 +21,7 @@ contract AssetTransfer {
 
   event NewCompanyRegistered(uint _companyID);
   event NewAssetRegisteredToCompany(uint _assetID, uint _companyID);
+  event AssetTransfer(uint _assetID, uint _toCompanyID, uint _fromCompanyID);
 
   function AssetTransfer() public {
     admin = msg.sender;
@@ -42,6 +43,12 @@ contract AssetTransfer {
   function registerAssetToCompany(uint _assetID, string _name, uint _companyID) public {
     companies[_companyID].assets[_assetID]= Asset(_assetID, _name);
     NewAssetRegisteredToCompany(_assetID, _companyID);
+  }
+
+  function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
+    companies[_toCompanyID].assets[_assetID] = companies[_fromCompanyID].assets[_assetID];
+    delete companies[_fromCompanyID].assets[_assetID];
+    AssetTransfer(_assetID, _toCompanyID, _fromCompanyID);
   }
 
 }
