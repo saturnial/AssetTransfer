@@ -44,4 +44,9 @@ contract AssetTransfer {
     NewAssetRegisteredToCompany(_assetID, _companyID);
   }
 
+  function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
+    companies[_toCompanyID].assets[_assetID] = companies[_fromCompanyID].assets[_assetID];
+    delete companies[_fromCompanyID].assets[_assetID];
+  }
+
 }
