@@ -8,4 +8,5 @@ contract AssetTransfer {
     string description;
   }
 
+  uint numCompanies;
 }
