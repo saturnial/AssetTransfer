@@ -48,6 +48,7 @@ contract AssetTransfer {
   function transferAssetToCompany(uint _assetID, uint _toCompanyID, uint _fromCompanyID) public {
     companies[_toCompanyID].assets[_assetID] = companies[_fromCompanyID].assets[_assetID];
     delete companies[_fromCompanyID].assets[_assetID];
+    AssetTransfer(_assetID, _toCompanyID, _fromCompanyID);
   }
 
 }
