@@ -111,7 +111,7 @@ contract AssetTransfer {
 
     require(msg.sender == owner);
     require(msg.sender != _to);
-    require(msg.value == price);
+    require(msg.value >= price);
 
     owner.transfer(price);
 
