@@ -24,6 +24,8 @@ contract AssetTransfer {
   mapping (uint => address) public assetRegistry;
   mapping (address => Company) public companies;
 
+  mapping (address => uint) balances;
+
   mapping(address => mapping (address => uint)) allowed;
 
   event NewCompanyRegistered(address _owner, uint _companyID);
