@@ -115,7 +115,7 @@ contract AssetTransfer {
     require(msg.sender != _to);
     require(msg.value >= price);
 
-    owner.transfer(price);
+    balances[owner] += msg.value;
 
     allowed[msg.sender][_to] = _tokenId;
     Approval(msg.sender, _to, _tokenId);
