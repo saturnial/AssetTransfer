@@ -77,6 +77,10 @@ contract AssetTransfer {
     Transfer(_from, _to, _assetId);
   }
 
+  function priceOf(uint _assetId) internal view returns (uint _price) {
+    return companies[ownerOf(_assetId)].assets[_assetId].price;
+  }
+
   /* ERC721 implementation */
 
   function name() public pure returns (string _name) {
