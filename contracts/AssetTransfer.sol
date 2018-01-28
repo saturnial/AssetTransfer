@@ -1,19 +1,21 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.18;
 
 contract AssetTransfer {
 
   struct Company {
     uint id;
     address owner;
-    string name;
-    string description;
+    bytes32 name;
+    bytes32 description;
     mapping (uint => Asset) assets;
+    bytes32[10] companyAssets;
+    uint assetIdx;
     uint numAssets;
   }
 
   struct Asset {
     uint id;
-    string name;
+    bytes32 name;
   }
 
   address admin;
@@ -22,6 +24,8 @@ contract AssetTransfer {
   uint public numAssets;
   mapping (uint => address) public assetRegistry;
   mapping (address => Company) public companies;
+  bytes32[10] public allCompanies;
+  bytes32[10] public allAssets;
 
   mapping(address => mapping (address => uint)) allowed;
 
@@ -40,18 +44,21 @@ contract AssetTransfer {
     _;
   }
 
-  function registerNewCompany(address _owner, string _name, string _description) public adminOnly returns (uint companyID) {
+  function registerNewCompany(address _owner, bytes32 _name, bytes32 _description) public adminOnly returns (uint companyID) {
     companyID = numCompanies++;
     companies[_owner].id = companyID;
     companies[_owner].owner = _owner;
     companies[_owner].name = _name;
     companies[_owner].description = _description;
+    allCompanies[numCompanies] = companies[_owner].name;
     NewCompanyRegistered(_owner, companyID);
   }
 
-  function registerNewAssetToCompany(address _owner, string _name) public returns (uint assetID) {
+  function registerNewAssetToCompany(address _owner, bytes32 _name) public returns (uint assetID) {
     assetID = numAssets++;
-    companies[_owner].assets[assetID]= Asset(assetID, _name);
+    companies[_owner].assets[assetID] = Asset(assetID, _name);
+    companies[_owner].companyAssets[companies[_owner].assetIdx] = _name;
+    companies[_owner].assetIdx++;
     assetRegistry[assetID] = _owner;
     NewAssetRegisteredToCompany(_owner, assetID);
   }
@@ -78,11 +85,11 @@ contract AssetTransfer {
 
   /* ERC721 implementation */
 
-  function name() public pure returns (string _name) {
+  function name() public pure returns (bytes32 _name) {
     return "Asset";
   }
 
-  function symbol() public pure returns (string _symbol) {
+  function symbol() public pure returns (bytes32 _symbol) {
     return "AST";
   }
 
@@ -122,10 +129,18 @@ contract AssetTransfer {
     return companies[_owner].assets[_index].id;
   }
 
-  function tokenMetadata(uint _tokenId) public view returns (string _info) {
+  function tokenMetadata(uint _tokenId) public view returns (bytes32 _info) {
     require(validateAssetId(_tokenId));
     address owner = ownerOf(_tokenId);
     return companies[owner].assets[_tokenId].name;
+  }
+
+  function getCompanies() public view returns(bytes32[10]) {
+    return allCompanies;
+  }
+
+  function getCompanyAssets(address _owner) public view returns(bytes32[10]) {
+    return companies[_owner].companyAssets;
   }
 
 }
