@@ -112,15 +112,11 @@ contract AssetTransfer {
 
   function approve(address _to, uint _tokenId) public payable {
     require(validateAssetId(_tokenId));
-
-    address owner = ownerOf(_tokenId);
-    uint price = priceOf(_tokenId);
-
-    require(msg.sender == owner);
+    require(msg.sender == ownerOf(_tokenId));
     require(msg.sender != _to);
-    require(msg.value >= price);
+    require(msg.value >= priceOf(_tokenId));
 
-    balances[owner] += msg.value;
+    balances[ownerOf(_tokenId)] += msg.value;
 
     allowed[msg.sender][_to] = _tokenId;
     Approval(msg.sender, _to, _tokenId);
