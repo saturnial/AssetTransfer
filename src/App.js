@@ -30,14 +30,14 @@ class App extends Component {
         })
 
         // Instantiate contract once web3 provided.
-        this.instantiateContract()
+        this.getCompanyList()
         this.getAssetsForCompany();
       })
       .catch(() => {
         console.log('Error finding web3.')
       })
   }
-
+// 
   getCompanyList() {
 
     const contract = require('truffle-contract')
@@ -79,14 +79,15 @@ class App extends Component {
 
     // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
+      
       assetTransfer.deployed()
       .then((instance) => {
         assetTransferInstance = instance;
-        return assetTransferInstance.registerNewAssetToCompany(accounts[0], this.state.web3.fromAscii("gold"));
+        return assetTransferInstance.registerNewAssetToCompany(accounts[0], this.state.web3.fromAscii("gold"), { from: accounts[0], gas: 3000000 });
       })
       .then((res) => {
         // Get the value from the contract to prove it worked.
-        return assetTransferInstance.getCompanyAssets.call(accounts[0], this.state.web3.fromAscii("hello"));
+        return assetTransferInstance.getCompanyAssets.call(accounts[0]);
       })
       .then((result) => {
 
