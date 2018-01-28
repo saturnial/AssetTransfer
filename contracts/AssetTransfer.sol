@@ -14,6 +14,7 @@ contract AssetTransfer {
   struct Asset {
     uint id;
     string name;
+    uint price;
   }
 
   address admin;
@@ -22,6 +23,8 @@ contract AssetTransfer {
   uint public numAssets;
   mapping (uint => address) public assetRegistry;
   mapping (address => Company) public companies;
+
+  mapping (address => uint) balances;
 
   mapping(address => mapping (address => uint)) allowed;
 
@@ -49,9 +52,9 @@ contract AssetTransfer {
     NewCompanyRegistered(_owner, companyID);
   }
 
-  function registerNewAssetToCompany(address _owner, string _name) public returns (uint assetID) {
+  function registerNewAssetToCompany(address _owner, string _name, uint _price) public returns (uint assetID) {
     assetID = numAssets++;
-    companies[_owner].assets[assetID]= Asset(assetID, _name);
+    companies[_owner].assets[assetID]= Asset(assetID, _name, _price);
     assetRegistry[assetID] = _owner;
     NewAssetRegisteredToCompany(_owner, assetID);
   }
@@ -76,6 +79,15 @@ contract AssetTransfer {
     Transfer(_from, _to, _assetId);
   }
 
+  function priceOf(uint _assetId) internal view returns (uint _price) {
+    return companies[ownerOf(_assetId)].assets[_assetId].price;
+  }
+
+  function withdraw() public {
+    msg.sender.transfer(balances[msg.sender]);
+    delete balances[msg.sender];
+  }
+
   /* ERC721 implementation */
 
   function name() public pure returns (string _name) {
@@ -98,10 +110,13 @@ contract AssetTransfer {
     return assetRegistry[_tokenId];
   }
 
-  function approve(address _to, uint _tokenId) public {
+  function approve(address _to, uint _tokenId) public payable {
     require(validateAssetId(_tokenId));
     require(msg.sender == ownerOf(_tokenId));
     require(msg.sender != _to);
+    require(msg.value >= priceOf(_tokenId));
+
+    balances[ownerOf(_tokenId)] += msg.value;
 
     allowed[msg.sender][_to] = _tokenId;
     Approval(msg.sender, _to, _tokenId);
