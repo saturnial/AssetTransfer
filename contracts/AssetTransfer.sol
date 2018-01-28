@@ -83,6 +83,11 @@ contract AssetTransfer {
     return companies[ownerOf(_assetId)].assets[_assetId].price;
   }
 
+  function withdraw() public {
+    msg.sender.transfer(balances[msg.sender]);
+    delete balances[msg.sender];
+  }
+
   /* ERC721 implementation */
 
   function name() public pure returns (string _name) {
